@@ -18,7 +18,7 @@
    <children>
             <ImageView fitHeight="480.0" fitWidth="640.0" pickOnBounds="true">
        <image>
-            <Image url="@../../../../../../../../Users/nguye/Downloads/grassmap.png" />
+            <Image url="@/grassmap.png" />
          </image>
       </ImageView>
       <TextField fx:id="tftusername" layoutX="209.0" layoutY="96.0" prefHeight="26.0" prefWidth="206.0">

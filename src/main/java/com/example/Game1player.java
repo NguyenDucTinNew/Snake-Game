@@ -37,37 +37,36 @@ import com.example.Maps;
 /**
  * JavaFX App
  */
-public class Gamecontroller {
+public class Game1player {
     private String username2;
     private String username;
     private int mapindex;
     private Point2D snakeHead;
 
-    public Gamecontroller(String Username) {
+    public Game1player(String Username) {
         this.username = Username;
     }
 
-    // ????
     public Point2D getSnakeHead() {
         return snakeHead;
     }
 
-    public Gamecontroller(String Username, int mapid) {
+    public Game1player(String Username, int mapid) {
         this.username = Username;
         this.mapindex = mapid;
     }
 
-    public Gamecontroller(String Username, String Username2, int mapid) {
+    public Game1player(String Username, String Username2, int mapid) {
         this.username = Username;
         this.mapindex = mapid;
         this.username2 = Username2;
     }
 
-    public Gamecontroller(GraphicsContext gc) {
+    public Game1player(GraphicsContext gc) {
         this.gc = gc;
     }
 
-    public Gamecontroller() {
+    public Game1player() {
     }
 
     public String Getusername() {
@@ -77,16 +76,6 @@ public class Gamecontroller {
     public void upRight() {
         Point2D moverighthead = new Point2D(snakeHead.getX() + 1, snakeHead.getY());
         snakeHead = moverighthead;
-
-    }
-
-    public double getXSnakeHead()
-    {
-        return  snakeHead.getX();
-    }
-     public double getYSnakeHead()
-    {
-        return  snakeHead.getY();
     }
 
     public int getBodysize() {
@@ -113,18 +102,10 @@ public class Gamecontroller {
     public double getYsnakebody(int i) {
         return snakeBody.get(i).getY();
     }
-       public double getXsnakebody(int i) {
-        return snakeBody.get(i).getX();
-    }
-
-
-    public double getYsnakebodyn1(int i) {
-        return snakeBody.get(i - 1).getY();
-    }
 
     // gén đầu rắn
-    public void setSnakeHead() {
-        snakeHead = snakeBody.get(0);
+    public void setSnakeHead(Point2D snakeheadd) {
+        snakeBody.set(0, snakeheadd);
     }
 
     private static final int WIDTH = 800;
@@ -155,12 +136,12 @@ public class Gamecontroller {
 
     private Point2D snakeHead2;
     private Image foodImage;
-    public int foodX;
-    public int foodY;
+    private int foodX;
+    private int foodY;
     private boolean gameOver;
     private int currentDirection;
     private int currentDirection2;
-    public int score = 0;
+    private int score = 0;
     private int score2 = 0;
     public static Stage gamestage;
     private Maps mapsnake; // Biến thành viên để lưu trữ đối tượng Maps
@@ -168,7 +149,98 @@ public class Gamecontroller {
     // creter a screen with another fxml file
     public void startgame() {
 
-        // generateFood();
+        try {
+            gamestage = new Stage();
+            gamestage.setTitle("snakegame");
+            Group root = new Group();
+            Canvas canvas = new Canvas(WIDTH, HEIGHT);
+            root.getChildren().add(canvas);
+            Scene scene = new Scene(root);
+            gamestage.setScene(scene);
+
+            gamestage.show();
+            gc = canvas.getGraphicsContext2D();
+            scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent event) {
+                    // gọi biến khi ấn tạo sự kiện cho rắn là code
+                    KeyCode code = event.getCode();
+                    // set điều kiệu cho Code bằng Nút D hoặc Right dấu mũi tên
+                    if (code == KeyCode.RIGHT) {
+                        // Để cho người dùng hiểu cơ chế nhìn từ góc nhìn của người dùng
+                        // ví dụ đang quẹo phải bấm quẹo trái sẽ không được. Mún quẹo trái tính theo đầu
+                        // rắn phải bấm lên
+                        // Chạy từ góc nhìn của ng dùng
+                        if (currentDirection != LEFT) {
+                            currentDirection = RIGHT;
+                        }
+                    } else if (code == KeyCode.D) {
+                        // Để cho người dùng hiểu cơ chế nhìn từ góc nhìn của người dùng
+                        // ví dụ đang quẹo phải bấm quẹo trái sẽ không được. Mún quẹo trái tính theo đầu
+                        // rắn phải bấm lên
+                        // Chạy từ góc nhìn của ng dùng
+                        if (currentDirection2 != LEFT2) {
+                            currentDirection2 = RIGHT2;
+                        }
+                    } else if (code == KeyCode.LEFT) {
+                        if (currentDirection != RIGHT) {
+                            currentDirection = LEFT;
+                        }
+                    } else if (code == KeyCode.A) {
+                        if (currentDirection2 != RIGHT2) {
+                            currentDirection2 = LEFT2;
+                        }
+                    } else if (code == KeyCode.UP) {
+                        if (currentDirection != DOWN) {
+                            currentDirection = UP;
+                        }
+                    } else if (code == KeyCode.W) {
+                        if (currentDirection2 != DOWN2) {
+                            currentDirection2 = UP2;
+                        }
+                    } else if (code == KeyCode.DOWN) {
+                        if (currentDirection != UP) {
+                            currentDirection = DOWN;
+                        }
+                    } else if (code == KeyCode.S) {
+                        if (currentDirection2 != UP2) {
+                            currentDirection2 = DOWN2;
+                        }
+                    }
+                }
+            });
+
+            for (int i = 0; i < 3; i++) {
+                snakeBody.add(new Point2D(5, ROWS / 2));
+                // snakeBody2.add(new Point2D(10, ROWS / 2));
+            }
+            snakeHead = snakeBody.get(0);
+
+            mapsnake = new Maps();
+            // lúc có giao diện sẽ cho người dùng chọn các img map để pust hình đó vào map
+            // index đây là ví dụ lấy map số 2
+            DatabaseConnection connection = new DatabaseConnection();
+            mapsnake.setdatamap(connection.getMapData(mapindex));
+
+            mapsnake.Drawmap();
+            // pushmaplensever
+            /*
+             * DatabaseConnection connection = new DatabaseConnection();
+             * mapsnake.Pullmap(3);
+             * connection.saveMap(mapsnake.getdatamap());
+             */
+
+            generateFood();
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(130), e -> run(gc)));
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.play();
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+
     }
 
     /*
@@ -179,42 +251,65 @@ public class Gamecontroller {
     // vẽ foodImage vào vị trí foodx foody với square là đơn vị hàng (Weight / rows
     // == đơn vị cho 1 ô , 2 cái cuối là kích thươc add kích thước nó bằng với 1 ô
     // map)
-    public void drawFood(GraphicsContext gc) {
+    private void drawFood(GraphicsContext gc) {
 
         gc.drawImage(foodImage, foodX * SQUARE_SIZE, foodY * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
     }
 
-    public void run(GraphicsContext gc) {
-          
-        for(int i = snakeBody.size() -1 ; i>=1 ;i--)
-        {
-            Point2D tempbody = new Point2D(snakeBody.get(i-1).getX(), snakeBody.get(i-1).getY());
-            snakeBody.set(i, tempbody);
+    private void run(GraphicsContext gc) {
+        if (gameOver) {
+            gc.setFill(Color.RED);
+            gc.setFont(new Font("Digital-7", 70));
+            gc.fillText("Game Over", WIDTH / 3.5, HEIGHT / 2);
+             DatabaseConnection connection = new DatabaseConnection();
+            connection.saveScore1player(username, score);
+            return;
         }
-    
-    
+        drawBackground(gc);
+        drawFood(gc);
+        drawSnake(gc);
+
+        drawScore();
+
+        // tru 1 point trong snake để không xuất hiện màu của con rắn cũ hàm xóa vết nè
+        // và cho còn rắn bò nè
+        for (int i = snakeBody.size() - 1; i >= 1; i--) {
+            Point2D snakebodytemp = new Point2D(snakeBody.get(i - 1).getX(), snakeBody.get(i - 1).getY());
+            snakeBody.set(i, snakebodytemp);
+        } // move funtione of snake 2
+        /*
+         * for (int i = snakeBody2.size() - 1; i >= 1; i--) {
+         * Point2D snakebodytemp2 = new Point2D(snakeBody2.get(i - 1).getX(),
+         * snakeBody2.get(i - 1).getY());
+         * snakeBody2.set(i, snakebodytemp2);
+         * }
+         */
+
+        switch (currentDirection) {
+            case RIGHT:
+                moveRight();
+                break;
+            case LEFT:
+                moveLeft();
+                break;
+            case UP:
+                moveUp();
+                break;
+            case DOWN:
+                moveDown();
+                break;
+        }
+
+        snakeBody.set(0, snakeHead);
+
+        eatFood();
+
+        gameOver();
+
     }
 
     public void drawSnake(GraphicsContext gc) {
         gc.setFill(Color.web("4674E9"));// lay mau
-        // 2 cái đuôi 35 dưới đẻ lấy bo tròn , kích thước -1 để đảm bảo rắng không vượt
-        // quá 1 ô (đơn vị) ô = weight / row
-        // khác với fillrect là chỉ fill full hình chữ nhật thì fillroundrect vẽ bo tròn
-        // với setting được kích thước fill màu
-        // nhân vào để tính đơn vị ô lúc này tính đang ở ô mấy
-        // mảng bang đầu đã chia thành đơn vị ô để dễ fill dự và SQuare_Size
-        gc.fillRoundRect(snakeHead.getX() * SQUARE_SIZE, snakeHead.getY() * SQUARE_SIZE, SQUARE_SIZE - 1,
-                SQUARE_SIZE - 1, 35, 35);
-        // quét full body của rắn tình sao khi đã fill đầu răng thì tô từ đầu rắn về
-        // đuôi chạy từ 1 lý do là đầu răng đã được fill đầu rắng là snakebody(0)
-        for (int i = 1; i < snakeBody.size(); i++) {
-            gc.fillRoundRect(snakeBody.get(i).getX() * SQUARE_SIZE, snakeBody.get(i).getY() * SQUARE_SIZE,
-                    SQUARE_SIZE - 1, SQUARE_SIZE - 1, 30, 30);
-        }
-
-    }
-     public void drawSnake2(GraphicsContext gc) {
-        gc.setFill(Color.web("#000000"));// lay mau
         // 2 cái đuôi 35 dưới đẻ lấy bo tròn , kích thước -1 để đảm bảo rắng không vượt
         // quá 1 ô (đơn vị) ô = weight / row
         // khác với fillrect là chỉ fill full hình chữ nhật thì fillroundrect vẽ bo tròn
@@ -271,7 +366,7 @@ public class Gamecontroller {
      */
 
     // hàm tạo thức ăn thui và nó sẽ được recall liên tục đó
-    public void generateFood(Maps mapsnake) {
+    private void generateFood() {
         start: while (true) {
             // gán giá trị ngẫu nhiên từ 0 đến 20 rùi ép kiểu int
             foodX = (int) (Math.random() * ROWS);
@@ -302,7 +397,7 @@ public class Gamecontroller {
         snakeHead = moverighthead;
     }
 
-    private boolean checkCollisionWithWalls(Maps mapsnake) {
+    private boolean checkCollisionWithWalls() {
         // Kiểm tra xem đầu rắn có va chạm với các tường trong bản đồ hay không
         double wall = 0;
         int x = (int) snakeHead.getX();
@@ -321,7 +416,6 @@ public class Gamecontroller {
     public void upLeft() {
         Point2D moveLefthead = new Point2D(snakeHead.getX() - 1, snakeHead.getY());
         snakeHead = moveLefthead;
-
     }
 
     private void moveUp() {
@@ -342,7 +436,6 @@ public class Gamecontroller {
     public void upDown() {
         Point2D moveDownhead = new Point2D(snakeHead.getX(), snakeHead.getY() + 1);
         snakeHead = moveDownhead;
-
     }
 
     // cho đụng nó chết
@@ -354,55 +447,40 @@ public class Gamecontroller {
                 || snakeHead.getY() * SQUARE_SIZE >= HEIGHT) {
 
             gameOver = true;
-               
         }
 
         // vat can
         if (snakeHead.getX() < 0 || snakeHead.getY() < 0 || snakeHead.getX() * SQUARE_SIZE >= WIDTH
-                || snakeHead.getY() * SQUARE_SIZE >= HEIGHT || checkCollisionWithWalls(mapsnake)) {
+                || snakeHead.getY() * SQUARE_SIZE >= HEIGHT || checkCollisionWithWalls()) {
             gameOver = true;
-              
         }
 
         // destroy itself
         for (int i = 1; i < snakeBody.size(); i++) {
             if (snakeHead.getX() == snakeBody.get(i).getX() && snakeHead.getY() == snakeBody.get(i).getY()) {
+
                 gameOver = true;
-                
                 break;
             }
-             
-             
         }
-     
+
     }
 
-    public void eatFood() {
+    private void eatFood() {
         if (snakeHead.getX() == foodX && snakeHead.getY() == foodY) {
             snakeBody.add(new Point2D(-1, -1));
-            generateFood(mapsnake);
+            generateFood();
             score += 5;
         }
+
     }
 
-    public void drawScore(GraphicsContext gc) {
+    private void drawScore() {
         gc.setFill(Color.WHITE);
         gc.setFont(new Font("Digital-7", 35));
         gc.fillText("Score: " + score, 10, 35);
 
     }
-      public void drawScore2(GraphicsContext gc) {
-        gc.setFill(Color.RED);
-        gc.setFont(new Font("Digital-7", 35));
-        gc.fillText("Score: " + score, 10, 350);
-
-    }
-
-    public void addbody()
-    {
-        snakeBody.add(new Point2D(-1, -1));
-    }
-
 
     // Hàm xử lí mỗi khung hình đồng bọ trên kia là hàm xử lí khi có sự kiện nhấn
     // nút

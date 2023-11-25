@@ -15,7 +15,7 @@
    <children>
       <ImageView fx:id="grassbackgound" fitHeight="480.0" fitWidth="640.0" pickOnBounds="true">
          <image>
-            <Image url="@../../../../../../../../Users/nguye/OneDrive/Máy%20tính/grassbackground.png" />
+            <Image url="@/grassbackground.png" />
          </image>
       </ImageView>
       <Button layoutX="239.0" layoutY="200.0" mnemonicParsing="false" onAction="#btn1player" prefHeight="26.0" prefWidth="117.0" text="1 player" textAlignment="CENTER">

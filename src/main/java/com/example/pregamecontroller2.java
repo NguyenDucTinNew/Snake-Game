@@ -11,9 +11,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeType;
 
-public class pregamecontroller {
+public class pregamecontroller2 {
     private int mapindex;
     private String username;
+    private String username2;
 
     public void setUsername(String username) {
         tftusername.setText(username);
@@ -45,7 +46,13 @@ public class pregamecontroller {
     private Label lbusername;
 
     @FXML
+    private Label lbusername2;
+
+    @FXML
     private TextField tftusername;
+    
+    @FXML
+    private TextField tftusername2;
 
     @FXML
     private Pane paneboder1;
@@ -59,8 +66,10 @@ public class pregamecontroller {
     @FXML
     void btnhandleonclickstart(ActionEvent event) {
         username = tftusername.getText();
-        Game1player gamecontroller = new Game1player(username, mapindex);
+        username2 =tftusername2.getText();
+        Gamecontroller2 gamecontroller = new Gamecontroller2(username,username2, mapindex);
         gamecontroller.startgame();
+
     }
 
     @FXML
