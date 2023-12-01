@@ -13,9 +13,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -118,7 +120,7 @@ public class Game1player {
             "/ic_berry.png", "/ic_coconut_.png", "/ic_peach.png", "/ic_watermelon.png",
             "/ic_orange.png",
             "/ic_pomegranate.png" };
-
+    private Timeline timeline;
     private static final int RIGHT = 0;
     private static final int LEFT = 1;
     private static final int UP = 2;
@@ -128,8 +130,10 @@ public class Game1player {
     private static final int UP2 = 2;
     private static final int DOWN2 = 3;
     private static final Image wall = new Image("/wall.png");
+    private int Health = 3;
+    private static final Image Healthimg = new Image("/NewPiskel.png");
     // private static double [][] map = new double[ROWS][COLUMNS];
-
+    private int bodysnakeleght = 3;
     private GraphicsContext gc;
     private List<Point2D> snakeBody = new ArrayList();
     private List<Point2D> snakeBody2 = new ArrayList();
@@ -142,24 +146,40 @@ public class Game1player {
     private int currentDirection;
     private int currentDirection2;
     private int score = 0;
-    private int score2 = 0;
+    private int scorefollow = 3;
     public static Stage gamestage;
     private Maps mapsnake; // Biến thành viên để lưu trữ đối tượng Maps
+    Group root = new Group();
+    private Button restartButton = new Button("Chơi lại");
 
     // creter a screen with another fxml file
     public void startgame() {
 
         try {
+
             gamestage = new Stage();
             gamestage.setTitle("snakegame");
             Group root = new Group();
             Canvas canvas = new Canvas(WIDTH, HEIGHT);
             root.getChildren().add(canvas);
+            restartButton.setOnAction(event -> {
+                // Xử lý sự kiện khi nút chơi lại được nhấn
+                Restartgamewhengameover(); // Phương thức để khởi động lại trò chơi
+            });
+
+            // Thêm nút "Chơi lại" vào pane
+            root.getChildren().add(restartButton);
+
+            // Đặt vị trí nút chơi lại dưới chữ "Game Over"
+            restartButton.setTranslateX(WIDTH / 2.3);
+            restartButton.setTranslateY(HEIGHT / 2 + 50); // Cộng thêm 50 để di chuyển nút xuống dưới
+            restartButton.setStyle("-fx-background-color: orange; -fx-font-size: 24px; -fx-text-fill: black;");
+            restartButton.setVisible(false);
             Scene scene = new Scene(root);
             gamestage.setScene(scene);
-
             gamestage.show();
             gc = canvas.getGraphicsContext2D();
+
             scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
                 @Override
                 public void handle(KeyEvent event) {
@@ -210,7 +230,7 @@ public class Game1player {
                 }
             });
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < bodysnakeleght; i++) {
                 snakeBody.add(new Point2D(5, ROWS / 2));
                 // snakeBody2.add(new Point2D(10, ROWS / 2));
             }
@@ -221,7 +241,7 @@ public class Game1player {
             // index đây là ví dụ lấy map số 2
             DatabaseConnection connection = new DatabaseConnection();
             mapsnake.setdatamap(connection.getMapData(mapindex));
-
+            Health = 3;
             mapsnake.Drawmap();
             // pushmaplensever
             /*
@@ -232,7 +252,7 @@ public class Game1player {
 
             generateFood();
 
-            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(130), e -> run(gc)));
+            timeline = new Timeline(new KeyFrame(Duration.millis(130), e -> run(gc)));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
 
@@ -256,19 +276,64 @@ public class Game1player {
         gc.drawImage(foodImage, foodX * SQUARE_SIZE, foodY * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
     }
 
+    public void Restartgame() {
+        currentDirection = RIGHT;
+        snakeBody.clear();
+        gameOver = false;
+        bodysnakeleght = scorefollow /2;
+        scorefollow =bodysnakeleght;
+        Point2D headPosition = new Point2D(5, ROWS / 2); // Lưu trữ tọa độ của snakeHead
+    
+        for (int i = 0; i < bodysnakeleght; i++) {
+            snakeBody.add(headPosition); // Sử dụng headPosition để tạo các phần tử trong snakeBody
+        }
+        snakeHead = snakeBody.get(0);
+        restartButton.setVisible(false);
+        new Timeline(new KeyFrame(Duration.millis(130), e -> run(gc)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    public void Restartgamewhengameover() {
+        currentDirection = RIGHT;
+        bodysnakeleght = 3;
+        gameOver = false;
+        Health =3;
+        scorefollow =3;
+        score = 0;
+        snakeBody.clear();
+        for (int i = 0; i < bodysnakeleght; i++) {
+            snakeBody.add(new Point2D(5, ROWS / 2));
+            // snakeBody2.add(new Point2D(10, ROWS / 2));
+        }
+        snakeHead = snakeBody.get(0);
+        restartButton.setVisible(false);
+        new Timeline(new KeyFrame(Duration.millis(130), e -> run(gc)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+
+    }
+
     private void run(GraphicsContext gc) {
         if (gameOver) {
             gc.setFill(Color.RED);
             gc.setFont(new Font("Digital-7", 70));
             gc.fillText("Game Over", WIDTH / 3.5, HEIGHT / 2);
-             DatabaseConnection connection = new DatabaseConnection();
+            DatabaseConnection connection = new DatabaseConnection();
             connection.saveScore1player(username, score);
+            restartButton.setVisible(true);
             return;
         }
         drawBackground(gc);
         drawFood(gc);
         drawSnake(gc);
-
+        if (Health == 3) {
+            drawHealth3();
+        } else if (Health == 2) {
+            drawHealth2();
+        } else if (Health == 1) {
+            drawHealth1();
+        }
         drawScore();
 
         // tru 1 point trong snake để không xuất hiện màu của con rắn cũ hàm xóa vết nè
@@ -445,32 +510,53 @@ public class Game1player {
     public void gameOver() {
         if (snakeHead.getX() < 0 || snakeHead.getY() < 0 || snakeHead.getX() * SQUARE_SIZE >= WIDTH
                 || snakeHead.getY() * SQUARE_SIZE >= HEIGHT) {
-
-            gameOver = true;
+            Health--;
+    
+            if (Health < 0) {
+                gameOver = true;
+            } else {
+                Restartgame();
+                return; // Kết thúc hàm gameOver() sau khi gọi Restartgame()
+            }
         }
-
+    
         // vat can
         if (snakeHead.getX() < 0 || snakeHead.getY() < 0 || snakeHead.getX() * SQUARE_SIZE >= WIDTH
                 || snakeHead.getY() * SQUARE_SIZE >= HEIGHT || checkCollisionWithWalls()) {
-            gameOver = true;
+            Health--;
+    
+            if (Health < 0) {
+                gameOver = true;
+            } else {
+                Restartgame();
+                return; // Kết thúc hàm gameOver() sau khi gọi Restartgame()
+            }
         }
-
+    
         // destroy itself
         for (int i = 1; i < snakeBody.size(); i++) {
             if (snakeHead.getX() == snakeBody.get(i).getX() && snakeHead.getY() == snakeBody.get(i).getY()) {
-
-                gameOver = true;
+                Health = Health - 2;
+    
+                if (Health < 0) {
+                    gameOver = true;
+                } else {
+                    Restartgame();
+                    return; // Kết thúc hàm gameOver() sau khi gọi Restartgame()
+                }
+    
                 break;
             }
         }
-
     }
+        
 
     private void eatFood() {
         if (snakeHead.getX() == foodX && snakeHead.getY() == foodY) {
             snakeBody.add(new Point2D(-1, -1));
             generateFood();
             score += 5;
+            scorefollow++;
         }
 
     }
@@ -479,6 +565,24 @@ public class Game1player {
         gc.setFill(Color.WHITE);
         gc.setFont(new Font("Digital-7", 35));
         gc.fillText("Score: " + score, 10, 35);
+
+    }
+
+    private void drawHealth1() {
+        gc.drawImage(Healthimg, 140, 10, SQUARE_SIZE, SQUARE_SIZE);
+
+    }
+
+    private void drawHealth2() {
+        gc.drawImage(Healthimg, 140, 10, SQUARE_SIZE, SQUARE_SIZE);
+        gc.drawImage(Healthimg, 190, 10, SQUARE_SIZE, SQUARE_SIZE);
+
+    }
+
+    private void drawHealth3() {
+        gc.drawImage(Healthimg, 140, 10, SQUARE_SIZE, SQUARE_SIZE);
+        gc.drawImage(Healthimg, 190, 10, SQUARE_SIZE, SQUARE_SIZE);
+        gc.drawImage(Healthimg, 240, 10, SQUARE_SIZE, SQUARE_SIZE);
 
     }
 
