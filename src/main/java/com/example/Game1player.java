@@ -35,6 +35,7 @@ import java.util.Map;
 import com.example.DatabaseConnection;
 import com.example.usercrud;
 import com.example.Maps;
+import java.time.LocalDateTime;
 
 /**
  * JavaFX App
@@ -110,6 +111,7 @@ public class Game1player {
         snakeBody.set(0, snakeheadd);
     }
 
+    private LocalDateTime startTime = null;
     private static final int WIDTH = 800;
     private static final int HEIGHT = WIDTH;
     private static final int ROWS = 20;
@@ -120,6 +122,7 @@ public class Game1player {
             "/ic_berry.png", "/ic_coconut_.png", "/ic_peach.png", "/ic_watermelon.png",
             "/ic_orange.png",
             "/ic_pomegranate.png" };
+            
     private Timeline timeline;
     private static final int RIGHT = 0;
     private static final int LEFT = 1;
@@ -154,9 +157,9 @@ public class Game1player {
 
     // creter a screen with another fxml file
     public void startgame() {
-
+    
         try {
-
+            startTime = LocalDateTime.now();
             gamestage = new Stage();
             gamestage.setTitle("snakegame");
             Group root = new Group();
@@ -235,7 +238,7 @@ public class Game1player {
                 // snakeBody2.add(new Point2D(10, ROWS / 2));
             }
             snakeHead = snakeBody.get(0);
-
+      
             mapsnake = new Maps();
             // lúc có giao diện sẽ cho người dùng chọn các img map để pust hình đó vào map
             // index đây là ví dụ lấy map số 2
@@ -280,10 +283,10 @@ public class Game1player {
         currentDirection = RIGHT;
         snakeBody.clear();
         gameOver = false;
-        bodysnakeleght = scorefollow /2;
-        scorefollow =bodysnakeleght;
+        bodysnakeleght = scorefollow / 2;
+        scorefollow = bodysnakeleght;
         Point2D headPosition = new Point2D(5, ROWS / 2); // Lưu trữ tọa độ của snakeHead
-    
+
         for (int i = 0; i < bodysnakeleght; i++) {
             snakeBody.add(headPosition); // Sử dụng headPosition để tạo các phần tử trong snakeBody
         }
@@ -298,8 +301,8 @@ public class Game1player {
         currentDirection = RIGHT;
         bodysnakeleght = 3;
         gameOver = false;
-        Health =3;
-        scorefollow =3;
+        Health = 3;
+        scorefollow = 3;
         score = 0;
         snakeBody.clear();
         for (int i = 0; i < bodysnakeleght; i++) {
@@ -318,10 +321,11 @@ public class Game1player {
         if (gameOver) {
             gc.setFill(Color.RED);
             gc.setFont(new Font("Digital-7", 70));
-            gc.fillText("Game Over", WIDTH / 3.5, HEIGHT / 2);
+            gc.fillText("Game Over", WIDTH / 3.5, HEIGHT / 2);   
             DatabaseConnection connection = new DatabaseConnection();
-            connection.saveScore1player(username, score);
+            connection.saveHistory(username, startTime, mapindex, score);
             restartButton.setVisible(true);
+            timeline.stop();
             return;
         }
         drawBackground(gc);
@@ -354,7 +358,7 @@ public class Game1player {
             case RIGHT:
                 moveRight();
                 break;
-            case LEFT:
+            case LEFT:  
                 moveLeft();
                 break;
             case UP:
@@ -368,8 +372,9 @@ public class Game1player {
         snakeBody.set(0, snakeHead);
 
         eatFood();
-
+        
         gameOver();
+
 
     }
 
@@ -511,45 +516,47 @@ public class Game1player {
         if (snakeHead.getX() < 0 || snakeHead.getY() < 0 || snakeHead.getX() * SQUARE_SIZE >= WIDTH
                 || snakeHead.getY() * SQUARE_SIZE >= HEIGHT) {
             Health--;
-    
+
             if (Health < 0) {
                 gameOver = true;
             } else {
+                timeline.stop();
                 Restartgame();
                 return; // Kết thúc hàm gameOver() sau khi gọi Restartgame()
             }
         }
-    
+
         // vat can
         if (snakeHead.getX() < 0 || snakeHead.getY() < 0 || snakeHead.getX() * SQUARE_SIZE >= WIDTH
                 || snakeHead.getY() * SQUARE_SIZE >= HEIGHT || checkCollisionWithWalls()) {
             Health--;
-    
+
             if (Health < 0) {
                 gameOver = true;
             } else {
+                timeline.stop();
                 Restartgame();
                 return; // Kết thúc hàm gameOver() sau khi gọi Restartgame()
             }
         }
-    
+
         // destroy itself
         for (int i = 1; i < snakeBody.size(); i++) {
             if (snakeHead.getX() == snakeBody.get(i).getX() && snakeHead.getY() == snakeBody.get(i).getY()) {
                 Health = Health - 2;
-    
+
                 if (Health < 0) {
                     gameOver = true;
                 } else {
+                    timeline.stop();
                     Restartgame();
                     return; // Kết thúc hàm gameOver() sau khi gọi Restartgame()
                 }
-    
+
                 break;
             }
         }
     }
-        
 
     private void eatFood() {
         if (snakeHead.getX() == foodX && snakeHead.getY() == foodY) {

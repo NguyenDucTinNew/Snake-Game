@@ -1,17 +1,15 @@
-
-
 #imgmap1 {
-    -fx-border-color: red;
+    -fx-border-color: yellow;
     -fx-border-width: 6px;
 }
 
 #imgmap2 {
-    -fx-border-color: red;
+    -fx-border-color: yellow;
     -fx-border-width: 6px;
 }
 
 #imgmap3 {
-    -fx-border-color: red;
+    -fx-border-color: yellow;
     -fx-border-width: 6px;
 }
 .image-view-with-border {
