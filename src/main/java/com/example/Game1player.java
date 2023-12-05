@@ -133,23 +133,33 @@ public class Game1player {
     private static final int UP2 = 2;
     private static final int DOWN2 = 3;
     private static final Image wall = new Image("/wall.png");
+     private static final Image headup = new Image("/daulen.png");
+     private static final Image headown = new Image("/dauxuong.png");
+     private static final Image headright = new Image("/dauphai.png");
+     private static final Image headleft = new Image("/dautrai.png");
     private int Health = 3;
     private static final Image Healthimg = new Image("/NewPiskel.png");
-    // private static double [][] map = new double[ROWS][COLUMNS];
+
+    private static final Image boomImage = new Image("/bom.png");
     private int bodysnakeleght = 3;
     private GraphicsContext gc;
     private List<Point2D> snakeBody = new ArrayList();
     private List<Point2D> snakeBody2 = new ArrayList();
+   
 
     private Point2D snakeHead2;
     private Image foodImage;
+  
     private int foodX;
     private int foodY;
+    private int boomX;
+    private int boomY;
     private boolean gameOver;
     private int currentDirection;
     private int currentDirection2;
     private int score = 0;
     private int scorefollow = 3;
+    private int countboom =0;
     public static Stage gamestage;
     private Maps mapsnake; // Biến thành viên để lưu trữ đối tượng Maps
     Group root = new Group();
@@ -252,7 +262,7 @@ public class Game1player {
              * mapsnake.Pullmap(3);
              * connection.saveMap(mapsnake.getdatamap());
              */
-
+            generateBoom();
             generateFood();
 
             timeline = new Timeline(new KeyFrame(Duration.millis(130), e -> run(gc)));
@@ -277,6 +287,11 @@ public class Game1player {
     private void drawFood(GraphicsContext gc) {
 
         gc.drawImage(foodImage, foodX * SQUARE_SIZE, foodY * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+    }
+
+     private void drawBoom(GraphicsContext gc) {
+
+        gc.drawImage(boomImage, boomX * SQUARE_SIZE, boomY * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
     }
 
     public void Restartgame() {
@@ -329,6 +344,7 @@ public class Game1player {
             return;
         }
         drawBackground(gc);
+        drawBoom(gc);
         drawFood(gc);
         drawSnake(gc);
         if (Health == 3) {
@@ -357,22 +373,33 @@ public class Game1player {
         switch (currentDirection) {
             case RIGHT:
                 moveRight();
+                gc.drawImage(headright, snakeHead
+                .getX()* SQUARE_SIZE, snakeHead.getY() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                 break;
             case LEFT:  
                 moveLeft();
+                  gc.drawImage(headleft, snakeHead
+                .getX()* SQUARE_SIZE, snakeHead.getY() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                 break;
             case UP:
                 moveUp();
+                  gc.drawImage(headup, snakeHead
+                .getX()* SQUARE_SIZE, snakeHead.getY() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                 break;
             case DOWN:
                 moveDown();
+                  gc.drawImage(headown, snakeHead
+                .getX()* SQUARE_SIZE, snakeHead.getY() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                 break;
         }
 
         snakeBody.set(0, snakeHead);
-
+        countboom++;
         eatFood();
-        
+        if(countboom ==70)
+        {
+            generateBoom();
+        }
         gameOver();
 
 
@@ -386,11 +413,11 @@ public class Game1player {
         // với setting được kích thước fill màu
         // nhân vào để tính đơn vị ô lúc này tính đang ở ô mấy
         // mảng bang đầu đã chia thành đơn vị ô để dễ fill dự và SQuare_Size
-        gc.fillRoundRect(snakeHead.getX() * SQUARE_SIZE, snakeHead.getY() * SQUARE_SIZE, SQUARE_SIZE - 1,
-                SQUARE_SIZE - 1, 35, 35);
+      //  gc.fillRoundRect(snakeHead.getX() * SQUARE_SIZE, snakeHead.getY() * SQUARE_SIZE, SQUARE_SIZE - 1,
+      //  SQUARE_SIZE - 1, 35, 35);
         // quét full body của rắn tình sao khi đã fill đầu răng thì tô từ đầu rắn về
         // đuôi chạy từ 1 lý do là đầu răng đã được fill đầu rắng là snakebody(0)
-        for (int i = 1; i < snakeBody.size(); i++) {
+        for (int i = 0; i < snakeBody.size(); i++) {
             gc.fillRoundRect(snakeBody.get(i).getX() * SQUARE_SIZE, snakeBody.get(i).getY() * SQUARE_SIZE,
                     SQUARE_SIZE - 1, SQUARE_SIZE - 1, 30, 30);
         }
@@ -462,6 +489,29 @@ public class Game1player {
         }
     }
 
+
+    private void generateBoom() {
+        start: while (true) {
+            // gán giá trị ngẫu nhiên từ 0 đến 20 rùi ép kiểu int
+            boomX = (int) (Math.random() * ROWS);
+            boomY = (int) (Math.random() * COLUMNS);
+            // kiểm tra coi nó phải vật cảng không
+            if (mapsnake.map[boomX][boomY] == 1) {
+                continue start;
+            }
+
+            // check coi cái boom mới respone ra có trung với con rằng không
+            // chạy hết người con rắn coi coi nó có boom tạo ở trong đó không
+            for (Point2D snake : snakeBody) {
+                if (snake.getX() == boomX && snake.getY() == boomY) {
+                    continue start;
+                }
+            }
+            countboom =0;
+            break;
+        }
+    }
+
     private void moveRight() {
         Point2D moverighthead = new Point2D(snakeHead.getX() + 1, snakeHead.getY());
         snakeHead = moverighthead;
@@ -524,6 +574,13 @@ public class Game1player {
                 Restartgame();
                 return; // Kết thúc hàm gameOver() sau khi gọi Restartgame()
             }
+        }
+        //Dính Boom
+        if(snakeHead.getX() == boomX && snakeHead.getY() ==boomY )
+        {
+            gameOver = true;
+        
+            return;  
         }
 
         // vat can

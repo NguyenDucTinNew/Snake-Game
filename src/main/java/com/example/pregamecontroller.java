@@ -1,10 +1,14 @@
 package com.example;
+
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -14,6 +18,8 @@ import javafx.scene.shape.StrokeType;
 public class pregamecontroller {
     private int mapindex;
     private String username;
+    private String difficulty = "easy";
+    private BooleanProperty isHardMode = new SimpleBooleanProperty(false);
 
     public void setUsername(String username) {
         tftusername.setText(username);
@@ -22,7 +28,7 @@ public class pregamecontroller {
     public String getusername() {
         return username;
     }
-   
+
     @FXML
     private ImageView imgmap1;
 
@@ -65,17 +71,20 @@ public class pregamecontroller {
 
     @FXML
     void btnimgsgetmapid10(MouseEvent event) {
-     
+
     }
 
     @FXML
     void btnimgsgetmapid11(MouseEvent event) {
-      
+
     }
 
     @FXML
+    private ToggleButton toggetonoffbutton;
+
+    @FXML
     void btnimgsgetmapid12(MouseEvent event) {
-        
+
     }
 
     private void handlePaneClick(Pane pane, BooleanProperty isClicked, int mapIndex) {
@@ -83,7 +92,7 @@ public class pregamecontroller {
             this.mapindex = mapIndex;
             pane.setStyle("-fx-border-color: yellow; -fx-border-width: 6px; -fx-border-style: solid;");
             isClicked.set(true);
-    
+
             // Ẩn border của các Pane khác
             if (pane != paneboder1) {
                 paneboder1.setStyle("");
@@ -106,9 +115,28 @@ public class pregamecontroller {
     }
 
     @FXML
+    public void handleToggle(ActionEvent event) {
+        if (toggetonoffbutton.isSelected()) {
+            difficulty = "hard";
+        } else {
+            difficulty = "easy";
+        }
+        isHardMode.set(!isHardMode.get());
+    }
+
+    @FXML
     public void initialize() {
         paneboder1.setOnMouseClicked(event -> handlePaneClick(paneboder1, isImgMap1Clicked, 10));
         paneboder2.setOnMouseClicked(event -> handlePaneClick(paneboder2, isImgMap2Clicked, 11));
         paneboder3.setOnMouseClicked(event -> handlePaneClick(paneboder3, isImgMap3Clicked, 13));
+        if (difficulty.equals("easy")) {
+            toggetonoffbutton.setSelected(false);
+        } else {
+            toggetonoffbutton.setSelected(true);
+        }
+        StringBinding buttonTextBinding = Bindings.when(isHardMode)
+                .then("Hard")
+                .otherwise("Easy");
+        toggetonoffbutton.textProperty().bind(buttonTextBinding);
     }
 }

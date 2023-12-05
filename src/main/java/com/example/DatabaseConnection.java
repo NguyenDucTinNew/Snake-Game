@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 public class DatabaseConnection {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/snakegame";
@@ -98,6 +100,33 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             e.printStackTrace(); // Xử lý ngoại lệ, ví dụ: in ra thông báo lỗi
         }
+    }
+
+    public List<Ranking> getTopRankings(int count) {
+        List<Ranking> topRankings = new ArrayList<>();
+    
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String query = "SELECT * FROM players ORDER BY scorest DESC LIMIT ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, count);
+            ResultSet resultSet = statement.executeQuery();
+            
+            // có nghĩa là nó sẽ chạy từ đâu cho tới khi chạy hết câu querry
+            while (resultSet.next()) {
+                // Lấy các cột trong kết quả querry row ở đây là số hàng hiện tại
+                int rank = resultSet.getRow();
+                // Lấy username bằng cách tìm trong câu querry cái labbel nào = name
+                String username = resultSet.getString("name");
+                //Tương tự
+                int score = resultSet.getInt("scorest");
+                Ranking ranking = new Ranking(rank, username, score);
+                topRankings.add(ranking);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+        return topRankings;
     }
 
     private int getPlayerIdByUsername(String username) {
