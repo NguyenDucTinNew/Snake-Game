@@ -19,7 +19,8 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 public class menugamecontroller {
-
+    
+    
     @FXML
     private ImageView grassbackgound;
 
@@ -93,7 +94,7 @@ public class menugamecontroller {
         pregamecontroller pregameController = loader.getController();
         pregameController.initialize();
         Scene scene = new Scene(parent);
-        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("gamehard.css").toExternalForm());
         Stage stage = (Stage) grassbackgound.getScene().getWindow();
         stage.setScene(scene);
 

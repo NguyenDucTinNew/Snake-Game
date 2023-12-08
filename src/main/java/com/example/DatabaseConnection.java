@@ -106,7 +106,7 @@ public class DatabaseConnection {
         List<Ranking> topRankings = new ArrayList<>();
     
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String query = "SELECT * FROM players ORDER BY scorest DESC LIMIT ?";
+            String query = "SELECT player_name, Max(score) as highest_score FROM player_history GROUP BY player_name ORDER BY highest_score DESC LIMIT ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, count);
             ResultSet resultSet = statement.executeQuery();
@@ -116,9 +116,9 @@ public class DatabaseConnection {
                 // Lấy các cột trong kết quả querry row ở đây là số hàng hiện tại
                 int rank = resultSet.getRow();
                 // Lấy username bằng cách tìm trong câu querry cái labbel nào = name
-                String username = resultSet.getString("name");
+                String username = resultSet.getString("player_name");
                 //Tương tự
-                int score = resultSet.getInt("scorest");
+                int score = resultSet.getInt("highest_score");
                 Ranking ranking = new Ranking(rank, username, score);
                 topRankings.add(ranking);
             }
@@ -164,7 +164,6 @@ public class DatabaseConnection {
             statement.setString(3, username);
             statement.setTimestamp(4, Timestamp.valueOf(start));
             statement.setInt(5, mapIndex);
-
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace(); // Xử lý ngoại lệ, ví dụ: in ra thông báo lỗi
@@ -199,6 +198,7 @@ public class DatabaseConnection {
             return false;
         }
     }
+    
 
 
 }

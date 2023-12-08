@@ -1,0 +1,17 @@
+#anchorpane {
+    -fx-background-color: #333333;
+}
+#anchorpane.toggled {
+    -fx-background-color: #666666;
+}
+
+
+#toggetonoffbutton.toggled
+{
+    -fx-background-size: 50px;
+}
+#imggrass.toggled {
+        -fx-image: url('map1hard.png');
+    
+}
+

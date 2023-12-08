@@ -176,7 +176,7 @@ public class Gamecontroller2 {
 
             AnimationTimer timer = new AnimationTimer() {
                 private long lastUpdate = 0;
-                private final long frameDelay = 300_000_000; // Thời gian chờ giữa các khung hình (tính bằng
+                private final long frameDelay = 100_000_000; // Thời gian chờ giữa các khung hình (tính bằng
                                                                // nanosecond)
 
                 @Override

@@ -1,17 +1,27 @@
 package com.example;
 
+import java.util.Optional;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeType;
 
@@ -19,11 +29,14 @@ public class pregamecontroller {
     private int mapindex;
     private String username;
     private String difficulty = "easy";
+    private int hardmode=0;
     private BooleanProperty isHardMode = new SimpleBooleanProperty(false);
-
     public void setUsername(String username) {
         tftusername.setText(username);
     }
+
+    @FXML
+    private ImageView imggrass;
 
     public String getusername() {
         return username;
@@ -38,6 +51,9 @@ public class pregamecontroller {
     private ImageView imgmap2;
 
     private BooleanProperty isImgMap2Clicked = new SimpleBooleanProperty(false);
+
+    @FXML
+    private AnchorPane anchorpane;
 
     @FXML
     private ImageView imgmap3;
@@ -64,9 +80,27 @@ public class pregamecontroller {
 
     @FXML
     void btnhandleonclickstart(ActionEvent event) {
-        username = tftusername.getText();
-        Game1player gamecontroller = new Game1player(username, mapindex);
-        gamecontroller.startgame();
+        String username = tftusername.getText();
+        if (isValidUsername(username)) {
+            Game1player gamecontroller = new Game1player(username, mapindex,hardmode);
+            gamecontroller.startgame();
+        } else {
+            // Tạo một Dialog tùy chỉnh
+            Dialog<String> dialog = new Dialog<>();
+            dialog.setTitle("Lỗi");
+
+            // Thêm nội dung và trường nhập tên người dùng
+            Label label = new Label(
+                    "Tên người dùng phải là số điện thoại hợp lệ gồm 10 số và đầu số thuộc Việt Nam. Vui lòng nhập lại:");
+            dialog.getDialogPane().setContent(new VBox(label));
+
+            // Thiết lập nút OK và xử lý sự kiện khi người dùng nhấp vào
+            ButtonType buttonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().add(buttonType);
+            // Hiển thị dialog và chờ người dùng nhập tên mới
+            dialog.showAndWait();
+
+        }
     }
 
     @FXML
@@ -118,10 +152,36 @@ public class pregamecontroller {
     public void handleToggle(ActionEvent event) {
         if (toggetonoffbutton.isSelected()) {
             difficulty = "hard";
+            imgmap1.setImage(new Image("map1hard.png"));
+            imgmap2.setImage(new Image("map2hard.png"));
+            imgmap3.setImage(new Image("map3hard.png"));
+            anchorpane.setStyle("-fx-background-color: #680000;");
+            tftusername.setStyle("-fx-background-color:  #F08080");
+            lbusername.setStyle("-fx-text-fill: #b74141;");
+            lboptionmap.setStyle("-fx-text-fill: #b74141;");
+            imggrass.setVisible(false);
+            hardmode=1;
+
+
         } else {
             difficulty = "easy";
+            imgmap1.setImage(new Image("map1.png"));
+            imgmap2.setImage(new Image("map2.png"));
+            imgmap3.setImage(new Image("map3.png"));
+            anchorpane.setStyle("-fx-background-color: transparent;");
+            tftusername.setStyle("-fx-background-color: white;");
+            lbusername.setStyle("-fx-text-fill: black;");
+            lboptionmap.setStyle("-fx-text-fill: black;");
+             imggrass.setVisible(true);
+             hardmode=0;
+
         }
         isHardMode.set(!isHardMode.get());
+        anchorpane.getStyleClass().add("toggled");
+        toggetonoffbutton.getStyleClass().add("toggled");
+        imgmap1.getStyleClass().add("toggled");
+        
+
     }
 
     @FXML
@@ -135,8 +195,15 @@ public class pregamecontroller {
             toggetonoffbutton.setSelected(true);
         }
         StringBinding buttonTextBinding = Bindings.when(isHardMode)
-                .then("Hard")
-                .otherwise("Easy");
+                .then("Khó")
+                .otherwise("Dễ");
         toggetonoffbutton.textProperty().bind(buttonTextBinding);
+    }
+
+    private boolean isValidUsername(String username) {
+        // Kiểm tra username có đáp ứng yêu cầu hợp lệ hay không
+        // Ví dụ: Kiểm tra username không rỗng, chỉ chứa chữ số và bắt đầu bằng "03",
+        // "05", "07" ,"08" hoặc "09"
+        return username.matches("(03|05|07|08|09)\\d{8}");
     }
 }
