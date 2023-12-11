@@ -1,7 +1,10 @@
 package com.example;
 
+import java.io.IOException;
 import java.util.Optional;
-
+import java.io.IOException;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
@@ -9,7 +12,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -24,6 +30,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeType;
+import javafx.stage.Stage;
 
 public class pregamecontroller {
     private int mapindex;
@@ -77,6 +84,17 @@ public class pregamecontroller {
 
     @FXML
     private Pane paneboder3;
+    
+    @FXML
+    private void btnbackonclick() throws IOException{
+       FXMLLoader loader = new FXMLLoader(getClass().getResource("menugame.fxml"));
+    Parent root = loader.load();
+    Scene scene = new Scene(root);
+    Stage stage = (Stage) btnback.getScene().getWindow();
+    stage.setScene(scene);
+    stage.show();
+    }
+
 
     @FXML
     void btnhandleonclickstart(ActionEvent event) {
@@ -112,6 +130,8 @@ public class pregamecontroller {
     void btnimgsgetmapid11(MouseEvent event) {
 
     }
+    @FXML
+    private Button btnback;
 
     @FXML
     private ToggleButton toggetonoffbutton;

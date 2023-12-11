@@ -412,7 +412,10 @@ public class Game1player {
         }
 
         snakeBody.set(0, snakeHead);
+        if(hardmode ==1)
+        {
         countboom++;
+        }
         eatFood();
         if (countboom == 70) {
             generateBoom();
@@ -445,7 +448,7 @@ public class Game1player {
     public void drawBackground(GraphicsContext gc) {
 
         if (hardmode == 1) {
-            for (int i = 0; i < ROWS; i++) {
+            for(int i = 0; i < ROWS; i++) {
                 for (int j = 0; j < COLUMNS; j++) {
                     if (mapsnake.map[i][j] == 0) {
                         // Ô trống

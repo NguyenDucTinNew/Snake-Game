@@ -37,7 +37,7 @@
             </Lighting>
          </effect>
       </TextField>
-      <Label fx:id="lbusername" layoutX="90.0" layoutY="50.0" text="Tên Người Chơ 1">
+      <Label fx:id="lbusername" layoutX="90.0" layoutY="50.0" text="Tên Người Chơi 1">
          <font>
             <Font name="Cambria" size="18.0" />
          </font>
@@ -89,6 +89,7 @@
             <Font name="Cambria" size="18.0" />
          </font>
       </Label>
+       <Button fx:id="btnback" layoutX="28.0" layoutY="14.0" mnemonicParsing="false" onAction="#btnbackonclick" style="-fx-background-radius: 30px; -fx-background-color: #BDB76B;" text="Quay Lại" />
       <TextField fx:id="tftusername2" layoutX="356.0" layoutY="105.0" prefHeight="26.0" prefWidth="206.0">
          <effect>
             <Lighting diffuseConstant="1.31" specularConstant="1.44" specularExponent="17.43" surfaceScale="2.14">

@@ -37,7 +37,7 @@
             </Lighting>
          </effect>
       </TextField>
-      <Label fx:id="lbusername" layoutX="90.0" layoutY="50.0" text="Tên Người Chơ 1">
+      <Label fx:id="lbusername" layoutX="90.0" layoutY="50.0" text="Tên Người Chơi 1">
          <font>
             <Font name="Cambria" size="18.0" />
          </font>

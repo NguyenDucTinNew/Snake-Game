@@ -95,7 +95,6 @@ public class DatabaseConnection {
             statement.setInt(3, mapIndex);
             statement.setTimestamp(4, Timestamp.valueOf(gametime));
             statement.setTimestamp(5, Timestamp.valueOf(endtime));
-
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace(); // Xử lý ngoại lệ, ví dụ: in ra thông báo lỗi
@@ -148,6 +147,23 @@ public class DatabaseConnection {
     public void saveHistory(String username, LocalDateTime start, int mapIndex, int score) {
         if (!isUserExists(username)) {
             saveScore1player(username, score);
+              try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String query = "INSERT INTO player_history (players_id, score, player_name, timestart, map_ids) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            // Lấy player_id của người chơi 1 từ bảng players
+            int player1Id = getPlayerIdByUsername(username);
+
+            // Lưu thông tin của người chơi 1
+            statement.setInt(1, player1Id);
+            statement.setInt(2, score);
+            statement.setString(3, username);
+            statement.setTimestamp(4, Timestamp.valueOf(start));
+            statement.setInt(5, mapIndex);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace(); // Xử lý ngoại lệ, ví dụ: in ra thông báo lỗi
+        }
             return;
         }
         

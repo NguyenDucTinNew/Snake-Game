@@ -35,6 +35,8 @@ import com.example.DatabaseConnection;
 import com.example.usercrud;
 import com.example.Gamecontroller;
 
+ 
+
 /**
  * JavaFX App
  */
@@ -47,6 +49,14 @@ public class Gamecontroller2 {
     private static final int LEFT = 1;
     private static final int UP = 2;
     private static final int DOWN = 3;
+    private static final Image headup = new Image("/daulen.png");
+    private static final Image headown = new Image("/dauxuong.png");
+    private static final Image headright = new Image("/dauphai.png");
+    private static final Image headleft = new Image("/dautrai.png");
+     private static final Image headup2 = new Image("/dauran2up.png");
+    private static final Image headown2 = new Image("/daurandown2.png");
+    private static final Image headright2 = new Image("/dauranright2.png");
+    private static final Image headleft2 = new Image("/dauranleft2.png");
     private GraphicsContext gc;
     private int currentDirection;
     private int currentDirection2;
@@ -206,15 +216,19 @@ public class Gamecontroller2 {
                         switch (currentDirection) {
                             case RIGHT:
                                 snake1.upRight();
+                                gc.drawImage(headright, snake1.getXSnakeHead()* SQUARE_SIZE, snake1.getYSnakeHead() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                                 break;
                             case LEFT:
                                 snake1.upLeft();
+                                gc.drawImage(headleft,  snake1.getXSnakeHead() * SQUARE_SIZE,  snake1.getYSnakeHead() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                                 break;
                             case UP:
                                 snake1.upUp();
+                                gc.drawImage(headup, snake1.getXSnakeHead() * SQUARE_SIZE, snake1.getYSnakeHead() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                                 break;
                             case DOWN:
                                 snake1.upDown();
+                                gc.drawImage(headown,  snake1.getXSnakeHead() * SQUARE_SIZE,  snake1.getYSnakeHead() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                                 break;
                         }
                         snake1.setbodysnake(0, snake1.getSnakeHead());
@@ -223,15 +237,21 @@ public class Gamecontroller2 {
                         switch (currentDirection2) {
                             case RIGHT:
                                 snake2.upRight();
+                                  gc.drawImage(headright2, snake2.getXSnakeHead()* SQUARE_SIZE, snake2.getYSnakeHead() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                                 break;
                             case LEFT:
                                 snake2.upLeft();
+                                gc.drawImage(headleft2, snake2.getXSnakeHead()* SQUARE_SIZE, snake2.getYSnakeHead() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                                 break;
                             case UP:
                                 snake2.upUp();
+                                gc.drawImage(headup2, snake2.getXSnakeHead()* SQUARE_SIZE, snake2.getYSnakeHead() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+                               
                                 break;
                             case DOWN:
                                 snake2.upDown();
+                                gc.drawImage(headown2, snake2.getXSnakeHead()* SQUARE_SIZE, snake2.getYSnakeHead() * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+                               
                                 break;
                         }
 

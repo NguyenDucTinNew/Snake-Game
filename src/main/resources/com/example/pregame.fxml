@@ -85,6 +85,7 @@
       <Pane fx:id="paneboder1" layoutX="28.0" layoutY="209.0" prefHeight="160.0" prefWidth="162.0" />
       <Pane fx:id="paneboder2" layoutX="242.0" layoutY="209.0" prefHeight="160.0" prefWidth="162.0" style="-fx-border-color: yellow;" />
       <Pane fx:id="paneboder3" layoutX="453.0" layoutY="209.0" prefHeight="160.0" prefWidth="162.0" style="-fx-border-color: yellow;" />
-      <ToggleButton fx:id="toggetonoffbutton" layoutX="513.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleToggle" text="Easy/Hard" />
+      <ToggleButton fx:id="toggetonoffbutton" layoutX="513.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleToggle" style="-fx-background-radius: 30px; -fx-background-color: #BDB76B;" text="Easy/Hard" />
+      <Button fx:id="btnback" layoutX="28.0" layoutY="14.0" mnemonicParsing="false" onAction="#btnbackonclick" style="-fx-background-radius: 30px; -fx-background-color: #BDB76B;" text="Quay Lại" />
    </children>
 </AnchorPane>
