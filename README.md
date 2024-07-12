@@ -13,9 +13,13 @@
 +Cắn vào thân sẽ trừ 1 mạng
 +Mỗi lần trừ mạng sẽ giảm chiều dài rắn
 
+++++ Lưu Điểm
++ Đặt tên dựa trên Số điện thoại và điểm sẽ cập nhập trên hệ thống
+
 ++++Độ Khó 
 + Có 2 mức độ khó. Mức bình thường và mức khó
 + Ở mức độ khó sẽ có chướng ngại xuất hiện
 Bạn có thể lựa chọn mức độ khó dễ để phù hợp với trình độ của mình.
 Một số game còn có các bản đồ (map) khác nhau để chơi, mỗi bản đồ sẽ có sự sắp xếp và kích thước khác nhau, đòi hỏi người chơi phải thích ứng.
 Mục tiêu là ăn được nhiều thức ăn nhất có thể để tăng độ dài của rắn và đạt được điểm số cao nhất.
+
